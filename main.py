@@ -26,16 +26,23 @@ try:
     st.header("Create a New Table")
     table_name = st.text_input("Table name")
     if table_name:
-        col_name = st.text_input("Column name")
-        col_type = st.text_input("Column type")
-        nullable = st.checkbox("Nullable")
+        col1, col2, col3 = st.columns([3, 3, 1])  # Adjust column widths as needed
+
+        with col1:
+            col_name = st.text_input("Column name", key="col_name_input")
+        with col2:
+            col_type = st.text_input("Column type", key="col_type_input")
+        with col3:
+            nullable = st.checkbox("Nullable", key="nullable_checkbox")
 
         if st.button("Add column"):
             if col_name and col_type:
-                # Add column to the session state dictionary
-                model = TableModel(col_name, col_type, nullable)
-                st.session_state.columns.append(model)
-                st.success(f"Added column: {col_name} ({col_type})")
+                if TableFactory.valid_col_type(col_type):
+                    model = TableModel(col_name, col_type, nullable)
+                    st.session_state.columns.append(model)
+                    st.success(f"Added column: {col_name} ({col_type})")
+                else:
+                    st.error("Column type invalid.")
             else:
                 st.error("Please provide both Column name and Column type.")
 
