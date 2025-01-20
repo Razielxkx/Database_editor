@@ -1,5 +1,7 @@
 from src.database.models import session, TableFactory
+from src.database.querries import QueryExecutor
 import streamlit as st
+from streamlit_option_menu import option_menu
 from src.database.table_model import TableModel
 
 st.set_page_config(page_title="Db editor", layout="wide")
@@ -22,6 +24,14 @@ try:
 
     if "columns" not in st.session_state:
         st.session_state.columns = list()
+
+    # menu, needs some research !
+    # selected = option_menu("Main Menu", ["Home", 'Settings'],
+    #                        icons=['house', 'gear'], menu_icon="cast", default_index=1)
+
+    query = st.text_input("Query")
+    if st.button("Execute"):
+        st.success(QueryExecutor.execute_query(query))
 
     st.header("Create a New Table")
     table_name = st.text_input("Table name")
