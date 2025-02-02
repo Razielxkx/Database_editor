@@ -3,7 +3,7 @@ from sqlalchemy import create_engine, Column, Integer, String, Boolean, DECIMAL,
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import re
-from src.database.table_model import TableModel
+from database.table_model import TableModel
 from dotenv import load_dotenv
 
 VALID_COL_TYPES = ("int", "integer", "bool", "boolean", "decimal", "money", "str", "varchar", "nvarchar", "string", "datetime")

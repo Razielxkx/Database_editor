@@ -1,6 +1,6 @@
 import re
 from sqlalchemy import and_
-from src.database.models import MetaData, engine, session, Table
+from database.models import MetaData, engine, session, Table
 from datetime import datetime
 from decimal import Decimal
 
