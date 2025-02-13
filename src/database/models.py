@@ -6,7 +6,8 @@ import re
 from database.table_model import TableModel
 from dotenv import load_dotenv
 
-VALID_COL_TYPES = ("int", "integer", "bool", "boolean", "decimal", "money", "str", "varchar", "nvarchar", "string", "datetime")
+VALID_COL_TYPES = ("int", "integer", "bool", "boolean", "decimal", "money", "datetime")
+STRING_COL_TYPES = ("str", "varchar", "nvarchar", "string")
 
 load_dotenv()
 db_url_for_mysql = f"mysql+mysqlconnector://{os.getenv("MYSQL_USERNAME")}:{os.getenv("MYSQL_PASSWORD")}@localhost:3306/php_my_admin"
@@ -72,9 +73,16 @@ class TableFactory:
 
 
     @staticmethod
-    def valid_col_type(col_type):
+    def valid_col_type(col_type: str):
+        # Check if the type is a string-related type with size (e.g., string(20))
+        for string_type in STRING_COL_TYPES:
+            # Regular expression to match pattern like 'string(20)' or 'varchar(100)'
+            if re.fullmatch(rf"{string_type}\(\d+\)", col_type):
+                return True
+
         if col_type in VALID_COL_TYPES:
             return True
+
         return False
 
 
