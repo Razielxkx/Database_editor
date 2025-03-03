@@ -21,7 +21,7 @@ try:
                 st.sidebar.write("No columns found for this table.")
 
     if "columns" not in st.session_state:
-        st.session_state.columns = list()
+        st.session_state.columns = []
 
     st.header("Create a New Table")
     table_name = st.text_input("Table name")
@@ -38,8 +38,12 @@ try:
         if st.button("Add column"):
             if col_name and col_type:
                 if TableFactory.valid_col_type(col_type):
-                    model = TableModel(col_name, col_type, nullable)
-                    st.session_state.columns.append(model)
+                    column_data = {
+                        "name": col_name,
+                        "type": col_type,
+                        "nullable": nullable
+                    }
+                    st.session_state.columns.append(column_data)
                     st.success(f"Added column: {col_name} ({col_type})")
                 else:
                     st.error("Column type invalid.")
@@ -47,9 +51,15 @@ try:
                 st.error("Please provide both Column name and Column type.")
 
         if st.button("Create table"):
-            TableFactory.create_table_class(table_name, st.session_state.columns)
+            models = [TableModel(col["name"], col["type"], col["nullable"]) for col in st.session_state.columns]
+            TableFactory.create_table_class(table_name, models)
             st.success(f"Table '{table_name}' created with columns: {st.session_state.columns}")
-            st.session_state.columns = {}
+            st.session_state.columns = []
+
+    # Convert the list of dictionaries to a DataFrame for display
+    import pandas as pd
+    columns_df = pd.DataFrame(st.session_state.columns)
+    st.dataframe(columns_df)
 
 except Exception as ex:
     print(f"Something went wrong with error: {ex}")
